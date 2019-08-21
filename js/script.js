@@ -39,7 +39,7 @@ $(document).ready(function(){
             price: productPrice
         },
         success: function(result){
-
+          console.log(result);
         },
         error: function(error){
           console.log(error);
