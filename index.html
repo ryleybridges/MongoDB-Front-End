@@ -7,8 +7,57 @@
     </head>
     <body>
 
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h1>Product Library</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h3>Add New Product</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <form id="addProduct">
+                        <div class="form-group">
+                            <label for="project_name">Product Name</label>
+                            <input type="text" name="product_name" class="form-control" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="project_price">Product Price</label>
+                            <input type="number" name="project_Price" class="form-control" value="">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary" name="button" id="addProduct">Add Product</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h3>All Product</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <ul id="productList" class="list-group">
+                      <!-- <li class="list-group-item d-flex justify-content-between align-items-center">
+                          Product 1
+                          <div>
+                              <button class="btn btn-info">Edit</button>
+                              <button class="btn btn-danger">Remove</button>
+                          </div>
+                      </li> -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <script src="node_modules/jquery/dist/jquery.min.js" charset="utf-8"></script>
         <script src="node_modules/popper.js/dist/umd/popper.min.js" charset="utf-8"></script>
         <script src="node_modules/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
+        <script src="js/script.js" charset="utf-8"></script>
     </body>
 </html>
