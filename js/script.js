@@ -55,6 +55,33 @@ $(document).ready(function(){
     let contactEmail = $('.contactEmail').val();
     let contactSubject = $('.contactSubject').val();
     let contactMessage = $('.contactMessage').val();
+    if(contactName === ''){
+      console.log('please enter a name');
+    }else if(contactEmail === ''){
+      console.log('please enter an email');
+    }else if(contactSubject === ''){
+      console.log('please enter a subject');
+    }else if(contactMessage === ''){
+      console.log('please enter a message');
+    }else {
+      $.ajax({
+        url: 'http://localhost:3000/contact',
+        type: 'POST',
+        data: {
+            name: contactName,
+            email: contactEmail,
+            subject: contactSubject,
+            message: contactMessage
+        },
+        success: function(result){
+          console.log(result);
+        },
+        error: function(error){
+          console.log(error);
+          console.log('something went wrong');
+        }
+      });
+    }
   });
 
 });
