@@ -1,24 +1,43 @@
 $(document).ready(function(){
+let serverKey;
+let serverPort;
   $.ajax({
-    url: 'http://localhost:3000/allProducts',
+    url: 'config.json',
     type: 'GET',
     dataType: 'json',
-    success: function(data){
-      let products = data;
-      for (var i = 0; i < products.length; i++) {
-        $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
-                            ${products[i].name}
-                                <div>
-                                  <button class="btn btn-info">Edit</button>
-                                  <button class="btn btn-danger">Remove</button>
-                                </div>
-                            </li>`);
-        }
+    success: function(keys){
+      serverKey = keys['SERVER_URL'];
+      serverPort = keys['SERVER_PORT'];
+      getProductsData();
     },
     error: function(){
-      console.log('it is not working');
+      console.log('cannot find config.json file, cannot run application');
     }
   });
+
+  getProductsData = () => {
+    $.ajax({
+      url:  `${serverKey}:${serverPort}/allProducts`,
+      type: 'GET',
+      dataType: 'json',
+      success: function(data){
+        let products = data;
+        for (var i = 0; i < products.length; i++) {
+          $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
+                              ${products[i].name}
+                                  <div>
+                                    <button class="btn btn-info">Edit</button>
+                                    <button class="btn btn-danger">Remove</button>
+                                  </div>
+                              </li>`);
+          }
+      },
+      error: function(){
+        console.log('it is not working');
+      }
+    });
+  }
+
 
   $('#addProduct').click(function(){
     event.preventDefault();
@@ -32,14 +51,22 @@ $(document).ready(function(){
     }else {
       console.log(`${productName} costs $${productPrice}`);
       $.ajax({
-        url: 'http://localhost:3000/product',
+        url: `${serverKey}:${serverPort}/product`,
         type: 'POST',
         data: {
             name: productName,
             price: productPrice
         },
         success: function(result){
-          console.log(result);
+          $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
+                                ${result.name}
+                                  <div>
+                                  <button class="btn btn-info">Edit</button>
+                                  <button class="btn btn-danger">Remove</button>
+                                  </div>
+                                </li>`);
+          $('.productName').val(null);
+          $('.productPrice').val(null);
         },
         error: function(error){
           console.log(error);
@@ -65,7 +92,7 @@ $(document).ready(function(){
       console.log('please enter a message');
     }else {
       $.ajax({
-        url: 'http://localhost:3000/contact',
+        url: `${serverKey}:${serverPort}/contact`,
         type: 'POST',
         data: {
             name: contactName,
