@@ -51,15 +51,10 @@ $(document).ready(function(){
 
   $('#contactButton').click(function(){
     event.preventDefault();
-    console.log('clicked');
-    // let contactName = $('.contactName').val();
-    // let contactEmail = $('.contactEmail').val();
-    // let contactSubject = $('.contactSubject').val();
-    // let contactMessage = $('.contactMessage').val();
-    // console.log(contactName);
-    // console.log(contactEmail);
-    // console.log(contactSubject);
-    // console.log(contactMessage);
+    let contactName = $('.contactName').val();
+    let contactEmail = $('.contactEmail').val();
+    let contactSubject = $('.contactSubject').val();
+    let contactMessage = $('.contactMessage').val();
   });
 
 });
