@@ -23,10 +23,9 @@ let editing = false;
       type: 'GET',
       dataType: 'json',
       success: function(data){
-        let products = data;
-        for (var i = 0; i < products.length; i++) {
-          $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
-                              ${products[i].name}
+        for (var i = 0; i < data.length; i++) {
+          $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center" data-id=${data[i]._id}>
+                              ${data[i].name}
                                   <div>
                                     <button class="btn btn-info editBtn">Edit</button>
                                     <button class="btn btn-danger removeBtn">Remove</button>
@@ -40,6 +39,30 @@ let editing = false;
     });
   }
 
+  $('#productList').on('click', '.editBtn', function(){
+    event.preventDefault();
+    const id = $(this).parent().parent().data('id');
+    console.log(id);
+    console.log('button has been clicked');
+    $.ajax({
+      url: `${serverKey}:${serverPort}/product/${id}`,
+      type: 'GET',
+      dataType: 'json',
+      success:function(product){
+        console.log(product);
+        $('.productName').val(product['name']);
+        $('.productPrice').val(product['price']);
+        $('#productID').val(product['_id']);
+        $('#addProduct').text('Edit Product').addClass('btn-warning');
+        $('#heading').text('Edit Product');
+        editing = true;
+      },
+      error:function(err){
+        console.log(err);
+        console.log('it is not working');
+      }
+    });
+  });
 
   $('#addProduct').click(function(){
     event.preventDefault();
@@ -51,30 +74,55 @@ let editing = false;
     }else if(productPrice === ''){
       console.log('please enter a cost');
     }else {
-      console.log(`${productName} costs $${productPrice}`);
-      $.ajax({
-        url: `${serverKey}:${serverPort}/product`,
-        type: 'POST',
-        data: {
+      if(editing === true){
+        const id = $('#productID').val();
+        $.ajax({
+          url: `${serverKey}:${serverPort}/editProduct/${id}`,
+          type: 'PATCH',
+          data: {
             name: productName,
             price: productPrice
-        },
-        success: function(result){
-          $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
-                                ${result.name}
-                                  <div>
-                                  <button class="btn btn-info editBtn">Edit</button>
-                                  <button class="btn btn-danger removeBtn">Remove</button>
-                                  </div>
-                                </li>`);
-          $('.productName').val(null);
-          $('.productPrice').val(null);
-        },
-        error: function(error){
-          console.log(error);
-          console.log('something went wrong');
-        }
-      });
+          },
+          success:function(result){
+            console.log(`Edited ${productName} to be $${productPrice}`);
+            $('.productName').val(null);
+            $('.productPrice').val(null);
+            $('#productID').val(null);
+            $('#addProduct').text('Add Product').removeClass('btn-warning');
+            $('#heading').text('Add Product');
+            editing = false;
+          },
+          error:function(err){
+            console.log(err);
+            console.log('something went wrong');
+          }
+        });
+      }else {
+        console.log(`${productName} costs $${productPrice}`);
+        $.ajax({
+          url: `${serverKey}:${serverPort}/product`,
+          type: 'POST',
+          data: {
+              name: productName,
+              price: productPrice
+          },
+          success: function(result){
+            $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
+                                  ${result.name}
+                                    <div>
+                                    <button class="btn btn-info editBtn">Edit</button>
+                                    <button class="btn btn-danger removeBtn">Remove</button>
+                                    </div>
+                                  </li>`);
+            $('.productName').val(null);
+            $('.productPrice').val(null);
+          },
+          error: function(error){
+            console.log(error);
+            console.log('something went wrong');
+          }
+        });
+      }
     }
   });
 
@@ -112,22 +160,6 @@ let editing = false;
         }
       });
     }
-  });
-
-  $(document).on('click', '.editBtn', function(){
-    const id = $(this).parents('li').data('_id');
-    $.ajax({
-      url: `${serverKey}:${serverPort}/product/${id}`,
-      type: 'GET',
-      dataType: 'json',
-      success:function(id){
-        console.log(id);
-      },
-      error:function(error){
-        console.log(error);
-        console.log('something went wrong');
-      }
-    });
   });
 
 });
