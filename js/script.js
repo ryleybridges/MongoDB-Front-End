@@ -28,8 +28,8 @@ let editing = false;
           $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
                               ${products[i].name}
                                   <div>
-                                    <button class="btn btn-info">Edit</button>
-                                    <button class="btn btn-danger">Remove</button>
+                                    <button class="btn btn-info editBtn">Edit</button>
+                                    <button class="btn btn-danger removeBtn">Remove</button>
                                   </div>
                               </li>`);
           }
@@ -114,7 +114,7 @@ let editing = false;
     }
   });
 
-  $(document).on('click', '.btn-info', function(){
+  $(document).on('click', '.editBtn', function(){
     const id = $(this).parents('li').data('_id');
     $.ajax({
       url: `${serverKey}:${serverPort}/product/${id}`,
