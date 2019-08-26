@@ -1,6 +1,8 @@
 $(document).ready(function(){
 let serverKey;
 let serverPort;
+let editing = false;
+
   $.ajax({
     url: 'config.json',
     type: 'GET',
@@ -61,8 +63,8 @@ let serverPort;
           $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
                                 ${result.name}
                                   <div>
-                                  <button class="btn btn-info">Edit</button>
-                                  <button class="btn btn-danger">Remove</button>
+                                  <button class="btn btn-info editBtn">Edit</button>
+                                  <button class="btn btn-danger removeBtn">Remove</button>
                                   </div>
                                 </li>`);
           $('.productName').val(null);
@@ -94,6 +96,7 @@ let serverPort;
       $.ajax({
         url: `${serverKey}:${serverPort}/contact`,
         type: 'POST',
+        dataType: 'json',
         data: {
             name: contactName,
             email: contactEmail,
@@ -109,6 +112,35 @@ let serverPort;
         }
       });
     }
+  });
+
+  $(document).on('click', '.btn-info', function(){
+    const id = $(this).parents('li').data('id');
+    $.ajax({
+      url: `${serverKey}:${serverPort}/product/${id}`,
+      type: 'GET',
+      dataType: 'json',
+      success:function(id){
+        console.log(id);
+      },
+      error:function(error){
+        console.log(error);
+        console.log('something went wrong');
+      }
+    });
+    // event.preventDefault();
+    // $.ajax({
+    //   url: `${serverKey}:${serverPort}/allProducts/${id}`,
+    //   type: 'GET',
+    //   dataType: 'json',
+    //   success: function(result){
+    //     console.log(result);
+    //   },
+    //   error: function(error){
+    //     console.log(error);
+    //     console.log('something went wrong');
+    //   }
+    // });
   });
 
 });
