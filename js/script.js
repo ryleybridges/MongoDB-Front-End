@@ -115,7 +115,7 @@ let editing = false;
   });
 
   $(document).on('click', '.btn-info', function(){
-    const id = $(this).parents('li').data('id');
+    const id = $(this).parents('li').data('_id');
     $.ajax({
       url: `${serverKey}:${serverPort}/product/${id}`,
       type: 'GET',
@@ -128,19 +128,6 @@ let editing = false;
         console.log('something went wrong');
       }
     });
-    // event.preventDefault();
-    // $.ajax({
-    //   url: `${serverKey}:${serverPort}/allProducts/${id}`,
-    //   type: 'GET',
-    //   dataType: 'json',
-    //   success: function(result){
-    //     console.log(result);
-    //   },
-    //   error: function(error){
-    //     console.log(error);
-    //     console.log('something went wrong');
-    //   }
-    // });
   });
 
 });
