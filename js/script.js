@@ -24,8 +24,8 @@ let editing = false;
       dataType: 'json',
       success: function(data){
         for (var i = 0; i < data.length; i++) {
-          $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center" data-id=${data[i]._id}>
-                              ${data[i].name}
+          $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center productItem" data-id=${data[i]._id}>
+                              <span class="productName">${data[i].name}</span>
                                   <div>
                                     <button class="btn btn-info editBtn">Edit</button>
                                     <button class="btn btn-danger removeBtn">Remove</button>
@@ -64,24 +64,27 @@ let editing = false;
     });
   });
 
-  // $('#productList').on('click', '.removeBtn', function(){
-  //   event.preventDefault();
-  //   const id = $(this).parent().parent().data('id');
-  //   console.log(id);
-  //   console.log('button has been clicked');
-  //   $.ajax({
-  //     url: `${serverKey}:${serverPort}/deleteProduct/${id}`,
-  //     type: 'POST',
-  //     dataType: 'json',
-  //     success:function(product){
-  //       console.log(product);
-  //     },
-  //     error:function(err){
-  //       console.log(err);
-  //       console.log('it is not working');
-  //     }
-  //   });
-  // });
+  $('#productList').on('click', '.removeBtn', function(){
+    event.preventDefault();
+    const id = $(this).parent().parent().data('id');
+    $.ajax({
+      url: `${serverKey}:${serverPort}/products/${id}`,
+      type: 'DELETE',
+      success:function(result){
+        const allProducts = $('.productItem');
+        allProducts.each(function(){
+          console.log($(this).data('id'));
+          if($(this).data('id') === id){
+            $(this).remove();
+          }
+        });
+      },
+      error: function(err){
+        console.log(err);
+        console.log('something went wrong deleting the product');
+      }
+    });
+  });
 
   $('#addProduct').click(function(){
     event.preventDefault();
@@ -110,6 +113,13 @@ let editing = false;
             $('#addProduct').text('Add Product').removeClass('btn-warning');
             $('#heading').text('Add Product');
             editing = false;
+            const allProducts = $('.productItem');
+            allProducts.each(function(){
+              console.log($(this).data('id'));
+              if($(this).data('id') === id){
+                $(this).find('.productName').text(productName);
+              }
+            });
           },
           error:function(err){
             console.log(err);
@@ -126,8 +136,8 @@ let editing = false;
               price: productPrice
           },
           success: function(result){
-            $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center">
-                                  ${result.name}
+            $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center productItem">
+                                  <span class="productName">${result.name}</span>
                                     <div>
                                     <button class="btn btn-info editBtn">Edit</button>
                                     <button class="btn btn-danger removeBtn">Remove</button>
