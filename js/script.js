@@ -64,6 +64,25 @@ let editing = false;
     });
   });
 
+  // $('#productList').on('click', '.removeBtn', function(){
+  //   event.preventDefault();
+  //   const id = $(this).parent().parent().data('id');
+  //   console.log(id);
+  //   console.log('button has been clicked');
+  //   $.ajax({
+  //     url: `${serverKey}:${serverPort}/deleteProduct/${id}`,
+  //     type: 'POST',
+  //     dataType: 'json',
+  //     success:function(product){
+  //       console.log(product);
+  //     },
+  //     error:function(err){
+  //       console.log(err);
+  //       console.log('it is not working');
+  //     }
+  //   });
+  // });
+
   $('#addProduct').click(function(){
     event.preventDefault();
     // console.log('button has been clicked');
