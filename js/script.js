@@ -1,4 +1,3 @@
-$(document).ready(function(){
 let serverKey;
 let serverPort;
 let editing = false;
@@ -189,6 +188,62 @@ let editing = false;
         }
       });
     }
-  });
+});
 
+$('#loginTabBtn').click(function(){
+    event.preventDefault();
+    $('.nav-link').removeClass('active');
+    $(this).addClass('active');
+    $('#loginForm').show();
+    $('#registerForm').hide();
+});
+
+$('#registerTabBtn').click(function(){
+    event.preventDefault();
+    $('.nav-link').removeClass('active');
+    $(this).addClass('active');
+    $('#loginForm').hide();
+    $('#registerForm').removeClass('d-none').show();
+});
+
+$('#registerForm').submit(function(){
+  event.preventDefault();
+  // console.log('register has been clicked');
+  const username = $('#rUsername').val();
+  const email = $('#rEmail').val();
+  const password = $('#rPassword').val();
+  const confirmPassword = $('#rConfirmPassword').val();
+  if(username.length === 0){
+    console.log('please enter a username');
+  }else if(email.length === 0){
+    console.log('please enter an email');
+  }else if(password.length === 0){
+    console.log('please enter a password');
+  }else if(confirmPassword.length === 0){
+    console.log('please confirm password');
+  }else if(password !== confirmPassword){
+    console.log('your password does not match your confirm password');
+  }else {
+    console.log('good to go!');
+    $.ajax({
+      url: `${serverKey}:${serverPort}/users`,
+      type: 'POST',
+      data: {
+        username: username,
+        email: email,
+        password: password
+      },
+      success:function(result){
+        console.log(result);
+      },
+      error:function(err){
+        console.log(err);
+        console.log('something went wrong with registering a new user');
+      }
+    });
+  }
+});
+
+$(document).ready(function(){
+  $('#authForm').modal('show');
 });
