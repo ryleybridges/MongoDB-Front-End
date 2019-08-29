@@ -244,6 +244,45 @@ $('#registerForm').submit(function(){
   }
 });
 
+$('#loginForm').submit(function(){
+  event.preventDefault();
+  const username = $('#lUsername').val();
+  const password = $('#lPassword').val();
+  if(username.length === 0){
+    console.log('please enter a username');
+  }else if(password.length === 0){
+    console.log('please enter a password');
+  }else {
+    $.ajax({
+      url: `${serverKey}:${serverPort}/getUser`,
+      type: 'POST',
+      data: {
+        username: username,
+        password: password
+      },
+      success: function(result){
+        if(result === 'invalid user'){
+          console.log('cannot find user with that username');
+        }else if(result === 'invalid password'){
+          console.log('password is incorrect');
+        }else {
+          console.log('let us log you in');
+          console.log(result);
+
+          sessionStorage.setItem('userId', result['_id']);
+          sessionStorage.setItem('userName', result['username']);
+          sessionStorage.setItem('userEmail', result['email']);
+        }
+      },
+      error: function(err){
+        console.log(err);
+        console.log('there was an error with logging in');
+      }
+    });
+  }
+});
+
 $(document).ready(function(){
   $('#authForm').modal('show');
+  console.log(sessionStorage);
 });
