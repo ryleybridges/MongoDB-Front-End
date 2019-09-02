@@ -8,23 +8,20 @@
     <body>
 
         <div class="container">
+          <div class="row">
+            <div class="col">
+              <button type="button" name="button" class="btn btn-primary mt-2" data-toggle="modal" data-target="#authForm" id="loginBtn">Login / Register</button>
+              <button type="button" name="button" class="btn btn-primary mt-2 d-none" id="logoutBtn">Logout</button>
+            </div>
+          </div>
             <div class="row">
                 <div class="col">
                     <h1>Product Library</h1>
                 </div>
             </div>
-            <div class="col">
-              <div class="row">
-                <button type="button" name="button" class="btn btn-primary" data-toggle="modal" data-target="#authForm">Login / Register</button>
-              </div>
-            </div>
-            <div class="row">
+            <div class="row d-none" id="addProductSection">
                 <div class="col">
-                    <h3 id="heading">Add New Product</h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
+                  <h3 id="heading">Add New Product</h3>
                     <form id="productForm" action="#">
                         <div class="form-group">
                             <label for="product_name">Product Name</label>

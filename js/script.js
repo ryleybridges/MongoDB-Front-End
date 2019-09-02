@@ -22,14 +22,19 @@ let editing = false;
       type: 'GET',
       dataType: 'json',
       success: function(data){
+        $('#productList').empty();
         for (var i = 0; i < data.length; i++) {
-          $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center productItem" data-id=${data[i]._id}>
-                              <span class="productName">${data[i].name}</span>
-                                  <div>
-                                    <button class="btn btn-info editBtn">Edit</button>
-                                    <button class="btn btn-danger removeBtn">Remove</button>
-                                  </div>
-                              </li>`);
+          let product = `<li class="list-group-item d-flex justify-content-between align-items-center productItem" data-id=${data[i]._id}>
+                              <span class="productName">${data[i].name}</span>`
+                              if(sessionStorage['userName']){
+                                product += `<div>
+                                              <button class="btn btn-info editBtn">Edit</button>
+                                              <button class="btn btn-danger removeBtn">Remove</button>
+                                            </div>`;
+                              }
+
+                          product += `</li>`;
+              $('#productList').append(product);
           }
       },
       error: function(){
@@ -272,6 +277,11 @@ $('#loginForm').submit(function(){
           sessionStorage.setItem('userId', result['_id']);
           sessionStorage.setItem('userName', result['username']);
           sessionStorage.setItem('userEmail', result['email']);
+          getProductsData();
+          $('#authForm').modal('hide');
+          $('#loginBtn').hide();
+          $('#logoutBtn').removeClass('d-none');
+          $('#addProductSection').removeClass('d-none');
         }
       },
       error: function(err){
@@ -282,7 +292,24 @@ $('#loginForm').submit(function(){
   }
 });
 
+$('#logoutBtn').click(function(){
+  sessionStorage.clear();
+  getProductsData();
+  $('#loginBtn').show();
+  $('#logoutBtn').addClass('d-none');
+  $('#addProductSection').addClass('d-none');
+});
+
 $(document).ready(function(){
-  $('#authForm').modal('show');
+  // $('#authForm').modal('show');
   console.log(sessionStorage);
+
+  if(sessionStorage['userName']){
+    console.log('you are logged in');
+    $('#loginBtn').hide();
+    $('#logoutBtn').removeClass('d-none');
+    $('#addProductSection').removeClass('d-none');
+  }else {
+    console.log('please sign in');
+  }
 });
