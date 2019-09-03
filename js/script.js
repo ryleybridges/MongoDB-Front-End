@@ -2,6 +2,20 @@ let serverKey;
 let serverPort;
 let editing = false;
 
+$(document).ready(function(){
+  // $('#authForm').modal('show');
+  console.log(sessionStorage);
+
+  if(sessionStorage['userName']){
+    console.log('you are logged in');
+    $('#loginBtn').hide();
+    $('#logoutBtn').removeClass('d-none');
+    $('#addProductSection').removeClass('d-none');
+  }else {
+    console.log('please sign in');
+  }
+});
+
   $.ajax({
     url: 'config.json',
     type: 'GET',
@@ -27,10 +41,12 @@ let editing = false;
           let product = `<li class="list-group-item d-flex justify-content-between align-items-center productItem" data-id=${data[i]._id}>
                               <span class="productName">${data[i].name}</span>`
                               if(sessionStorage['userName']){
-                                product += `<div>
+                                if(sessionStorage['userId'] === data[i].user_id){
+                                  product += `<div>
                                               <button class="btn btn-info editBtn">Edit</button>
                                               <button class="btn btn-danger removeBtn">Remove</button>
                                             </div>`;
+                                }
                               }
 
                           product += `</li>`;
@@ -45,12 +61,19 @@ let editing = false;
 
   $('#productList').on('click', '.editBtn', function(){
     event.preventDefault();
+    if(!sessionStorage['userId']){
+      alert('401, permission denied');
+      return;
+    }
     const id = $(this).parent().parent().data('id');
     console.log(id);
     console.log('button has been clicked');
     $.ajax({
       url: `${serverKey}:${serverPort}/product/${id}`,
-      type: 'GET',
+      type: 'POST',
+      data: {
+        userId: sessionStorage['userId']
+      },
       dataType: 'json',
       success:function(product){
         console.log(product);
@@ -70,6 +93,10 @@ let editing = false;
 
   $('#productList').on('click', '.removeBtn', function(){
     event.preventDefault();
+    if(!sessionStorage['userId']){
+      alert('401, permission denied');
+      return;
+    }
     const id = $(this).parent().parent().data('id');
     $.ajax({
       url: `${serverKey}:${serverPort}/products/${id}`,
@@ -92,6 +119,11 @@ let editing = false;
 
   $('#addProduct').click(function(){
     event.preventDefault();
+    console.log('added');
+    if(!sessionStorage['userId']){
+      alert('401, permission denied');
+      return;
+    }
     // console.log('button has been clicked');
     let productName = $('.productName').val();
     let productPrice = $('.productPrice').val();
@@ -107,10 +139,11 @@ let editing = false;
           type: 'PATCH',
           data: {
             name: productName,
-            price: productPrice
+            price: productPrice,
+            userId: sessionStorage['userId']
           },
           success:function(result){
-            console.log(`Edited ${productName} to be $${productPrice}`);
+            console.log(result);
             $('.productName').val(null);
             $('.productPrice').val(null);
             $('#productID').val(null);
@@ -137,7 +170,8 @@ let editing = false;
           type: 'POST',
           data: {
               name: productName,
-              price: productPrice
+              price: productPrice,
+              userId: sessionStorage['userId']
           },
           success: function(result){
             $('#productList').append(`<li class="list-group-item d-flex justify-content-between align-items-center productItem">
@@ -213,6 +247,10 @@ $('#registerTabBtn').click(function(){
 
 $('#registerForm').submit(function(){
   event.preventDefault();
+  if(sessionStorage['userId']){
+    alert('401, permission denied');
+    return;
+  }
   // console.log('register has been clicked');
   const username = $('#rUsername').val();
   const email = $('#rEmail').val();
@@ -251,6 +289,10 @@ $('#registerForm').submit(function(){
 
 $('#loginForm').submit(function(){
   event.preventDefault();
+  if(sessionStorage['userId']){
+    alert('401, permission denied');
+    return;
+  }
   const username = $('#lUsername').val();
   const password = $('#lPassword').val();
   if(username.length === 0){
@@ -293,23 +335,13 @@ $('#loginForm').submit(function(){
 });
 
 $('#logoutBtn').click(function(){
+  if(!sessionStorage['userId']){
+    alert('401, permission denied');
+    return;
+  }
   sessionStorage.clear();
   getProductsData();
   $('#loginBtn').show();
   $('#logoutBtn').addClass('d-none');
   $('#addProductSection').addClass('d-none');
-});
-
-$(document).ready(function(){
-  // $('#authForm').modal('show');
-  console.log(sessionStorage);
-
-  if(sessionStorage['userName']){
-    console.log('you are logged in');
-    $('#loginBtn').hide();
-    $('#logoutBtn').removeClass('d-none');
-    $('#addProductSection').removeClass('d-none');
-  }else {
-    console.log('please sign in');
-  }
 });
